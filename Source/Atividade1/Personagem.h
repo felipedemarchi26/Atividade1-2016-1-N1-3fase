@@ -30,6 +30,8 @@ public:
 	void SetCollected(int32 NewCollected);
 	int32 GetCollected();
 	void AddCollected();
+	void SetInside(bool NewInside);
+	bool IsInside();
 
 private:
 
@@ -50,6 +52,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Properties")
 		int32 Collected;
+
+	UPROPERTY(EditAnywhere, Category = "Properties")
+		bool Inside;
 
 	void Move(float Value);
 	void MoveSides(float Value);

@@ -140,3 +140,11 @@ int32 APersonagem::GetCollected() {
 void APersonagem::AddCollected() {
 	Collected++;
 }
+
+void APersonagem::SetInside(bool NewInside) {
+	Inside = NewInside;
+}
+
+bool APersonagem::IsInside() {
+	return Inside;
+}
