@@ -13,7 +13,9 @@ class ATIVIDADE1_API AAtividade1GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-	
+public:
+
+	AAtividade1GameModeBase();
 	
 	
 };

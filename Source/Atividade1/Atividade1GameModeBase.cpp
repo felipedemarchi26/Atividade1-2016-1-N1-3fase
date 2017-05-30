@@ -2,7 +2,10 @@
 
 #include "Atividade1.h"
 #include "Atividade1GameModeBase.h"
+#include "MyHUD.h"
 
-
+AAtividade1GameModeBase::AAtividade1GameModeBase() {
+	HUDClass = AMyHUD::StaticClass();
+}
 
 

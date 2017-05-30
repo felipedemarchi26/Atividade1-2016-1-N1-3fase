@@ -34,6 +34,23 @@ AProjectileBoss::AProjectileBoss()
 	MeshComp->SetWorldLocation(FVector(0.0f, 0.0f, -30.0f));
 	MeshComp->SetupAttachment(CollisionComp);
 
+	//Criou o componente referente ao sistema de partícula
+	Particle = CreateDefaultSubobject<UParticleSystemComponent>
+		(TEXT("ParticleSystem"));
+	//Desabilita a auto ativação da partículo ao criar
+	Particle->bAutoActivate = false;
+	//Carrega a partícula a ser utilizada
+	ConstructorHelpers::FObjectFinder<UParticleSystem> LoadParticle
+	(TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Explosion.P_Explosion'"));
+	//Verifica se conseguiu carregar com sucesso
+	if (LoadParticle.Succeeded()) {
+		//Define o templete do componente referente a partícula
+		//como a partícula carregada.
+		Particle->SetTemplate(LoadParticle.Object);
+	}
+	//Anexa a partícula ao Root Component
+	Particle->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +80,15 @@ void AProjectileBoss::TimeToExplode() {
 			Personagem->SetActorLocation(FVector(-650.0f, 30.0f, 108.0f));
 		}
 	}
+	//Destroy();
+	Particle->ToggleActive();
+	MeshComp->SetVisibility(false);
+	GetWorldTimerManager().SetTimer(TimerDestroy, this,
+		&AProjectileBoss::TimeToDestroy, 1.0f, false);
+}
+
+void AProjectileBoss::TimeToDestroy() {
+	GetWorldTimerManager().ClearTimer(TimerDestroy);
 	Destroy();
 }
 
