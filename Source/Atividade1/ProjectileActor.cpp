@@ -48,7 +48,7 @@ AProjectileActor::AProjectileActor()
 void AProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
-	Index = 0;
+	Index = 1;
 }
 
 // Called every frame

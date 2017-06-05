@@ -56,9 +56,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Properties")
 		bool Inside;
 
+	UPROPERTY(EditAnywhere, Category = "Collision")
+		USphereComponent* CollectSphereComp;
+
+	TArray<class AItem*> Items;
+
 	void Move(float Value);
 	void MoveSides(float Value);
 	void StartRun();
 	void StopRun();
 	void Shoot();
+	void Collect();
 };

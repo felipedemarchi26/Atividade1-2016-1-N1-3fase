@@ -3,6 +3,7 @@
 #include "Atividade1.h"
 #include "Personagem.h"
 #include "ProjectileActor.h"
+#include "Item.h"
 
 
 // Sets default values
@@ -37,6 +38,10 @@ APersonagem::APersonagem()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraBoom);
+
+	CollectSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollectSphere"));
+	CollectSphereComp->InitSphereRadius(200.0f);
+	CollectSphereComp->SetupAttachment(RootComponent);
 
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
@@ -75,6 +80,8 @@ void APersonagem::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		&APersonagem::StopRun);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this,
 		&APersonagem::Shoot);
+	PlayerInputComponent->BindAction("Collect", IE_Pressed, this,
+		&APersonagem::Collect);
 
 
 }
@@ -147,4 +154,18 @@ void APersonagem::SetInside(bool NewInside) {
 
 bool APersonagem::IsInside() {
 	return Inside;
+}
+
+void APersonagem::Collect() {
+	TArray<AActor*> AtoresColetados;
+	CollectSphereComp->GetOverlappingActors(AtoresColetados);
+
+	for (int i = 0; i < AtoresColetados.Num(); i++) {
+		if (AtoresColetados[i]->IsA(AItem::StaticClass())) {
+			AItem* Item = Cast<AItem>(AtoresColetados[i]);
+			Items.Add(Item);
+			Item->Destroy();
+			UE_LOG(LogTemp, Warning, TEXT("Itens Coletados: %d"), Items.Num());
+		}
+	}
 }

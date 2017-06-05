@@ -46,7 +46,10 @@ void ACanhao::Shoot() {
 		FActorSpawnParameters SpawnParameters;
 		FVector Location = GetActorLocation();
 		FRotator Rotation = MeshComp->GetComponentRotation();
-		World->SpawnActor<AProjectileActor>(Location, Rotation,
+		AProjectileActor* Proj = World->SpawnActor<AProjectileActor>(Location, Rotation,
 			SpawnParameters);
+		if (Proj) {
+			Proj->SetIndex(0);
+		}
 	}
 }
