@@ -61,10 +61,13 @@ private:
 
 	TArray<class AItem*> Items;
 
+	TSubclassOf<class UUserWidget> UserWidgetPause;
+
 	void Move(float Value);
 	void MoveSides(float Value);
 	void StartRun();
 	void StopRun();
 	void Shoot();
 	void Collect();
+	void Pause();
 };

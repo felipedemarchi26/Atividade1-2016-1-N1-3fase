@@ -4,7 +4,13 @@
 #include "Personagem.h"
 #include "ProjectileActor.h"
 #include "Item.h"
-
+#include "Runtime/UMG/Public/UMG.h"
+#include "Runtime/UMG/Public/UMGStyle.h"
+#include "Runtime/UMG/Public/IUMGModule.h"
+#include "Runtime/UMG/Public/Slate/SObjectWidget.h"
+#include "Runtime/UMG/Public/Blueprint/UserWidget.h"
+#include "Runtime/UMG/Public/Blueprint/WidgetBlueprintLibrary.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 APersonagem::APersonagem()
@@ -45,6 +51,12 @@ APersonagem::APersonagem()
 
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
+	ConstructorHelpers::FClassFinder<UUserWidget> LoadWidget
+	(TEXT("WidgetBlueprint'/Game/Widgets/Pause.Pause_C'"));
+	if (LoadWidget.Succeeded()) {
+		UserWidgetPause = LoadWidget.Class;
+	}
+
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 }
@@ -82,6 +94,8 @@ void APersonagem::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		&APersonagem::Shoot);
 	PlayerInputComponent->BindAction("Collect", IE_Pressed, this,
 		&APersonagem::Collect);
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, this,
+		&APersonagem::Pause);
 
 
 }
@@ -166,6 +180,24 @@ void APersonagem::Collect() {
 			Items.Add(Item);
 			Item->Destroy();
 			UE_LOG(LogTemp, Warning, TEXT("Itens Coletados: %d"), Items.Num());
+		}
+	}
+}
+
+void APersonagem::Pause() {
+	UWorld* World = GetWorld();
+	if (World) {
+		APlayerController* PlayerController =
+			UGameplayStatics::GetPlayerController(World, 0);
+		if (PlayerController && UserWidgetPause != NULL) {
+			PlayerController->SetPause(true);
+			UUserWidget* UserW =
+				UWidgetBlueprintLibrary::Create(
+					World, UserWidgetPause, PlayerController);
+			if (UserW) {
+				UserW->AddToViewport();
+				PlayerController->bShowMouseCursor = true;
+			}
 		}
 	}
 }
