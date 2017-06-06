@@ -34,31 +34,37 @@ void AMyHUD::DrawHUD() {
 	FVector2D ScreenDimensions = FVector2D(Canvas->SizeX,
 		Canvas->SizeY);
 
+
 	//Obter o Pawn que está sendo controlado pelo Player
 	APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	//Realiza o cast de Pawn para Personagem
-	APersonagem* Personagem = Cast<APersonagem>(Pawn);
+	if (Pawn) {
+		//Realiza o cast de Pawn para Personagem
+		APersonagem* Personagem = Cast<APersonagem>(Pawn);
+		if (Personagem) {
 
-	//Definir o que será escrito na tela
-	//É necessário criar FStrings
-	//https://wiki.unrealengine.com/Logs,_Printing_Messages_To_Yourself_During_Runtime
-	FString LifeString = FString::Printf(TEXT("Life: %d"),
-		Personagem->GetLife());
-	FString CollectedString = FString::Printf(TEXT("%d / 10"),
-		Personagem->GetCollected());
+			//Definir o que será escrito na tela
+			//É necessário criar FStrings
+			//https://wiki.unrealengine.com/Logs,_Printing_Messages_To_Yourself_During_Runtime
+			FString LifeString = FString::Printf(TEXT("Life: %d"),
+				Personagem->GetLife());
+			FString CollectedString = FString::Printf(TEXT("%d / 10"),
+				Personagem->GetCollected());
 
-	//Desenha a string referente a vida do personagem, com cor
-	//vermelha, nas posições X = 200 e Y = 50, utilizando a fonte
-	//BaseFont com escala 2.0
-	//DrawText(LifeString, FColor::Red, 200, 50, BaseFont, 2.0f);
-	DrawText(CollectedString, FColor::Blue,
-		ScreenDimensions.X - 300, 50, BaseFont, 2.0f);
+			//Desenha a string referente a vida do personagem, com cor
+			//vermelha, nas posições X = 200 e Y = 50, utilizando a fonte
+			//BaseFont com escala 2.0
+			//DrawText(LifeString, FColor::Red, 200, 50, BaseFont, 2.0f);
+			DrawText(CollectedString, FColor::Blue,
+				ScreenDimensions.X - 300, 50, BaseFont, 2.0f);
 
-	
-	float PositionX = 200;
-	for (int i = 0; i < Personagem->GetLife(); i++) {
-		DrawTextureSimple(LifeTexture, PositionX, 50, 0.3f);
-		PositionX += 50.0f;
+
+			float PositionX = 200;
+			for (int i = 0; i < Personagem->GetLife(); i++) {
+				DrawTextureSimple(LifeTexture, PositionX, 50, 0.3f);
+				PositionX += 50.0f;
+			}
+		}
+
 	}
 
 }
