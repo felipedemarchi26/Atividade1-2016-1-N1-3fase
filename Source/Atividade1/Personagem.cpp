@@ -83,6 +83,7 @@ void APersonagem::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAxis("Move", this, &APersonagem::Move);
 	PlayerInputComponent->BindAxis("MoveSides", this, &APersonagem::MoveSides);
+	PlayerInputComponent->BindAxis("Turn", this, &APersonagem::AddControllerYawInput);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this,
 		&APersonagem::Jump);
@@ -101,23 +102,43 @@ void APersonagem::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void APersonagem::Move(float Value) {
-	FVector Direction(1.0f, 0.0f, 0.0f);
+	/*FVector Direction(1.0f, 0.0f, 0.0f);
 	if (Value > 0.0f) {
 		MeshComp->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
 	} else if (Value < 0.0f) {
 		MeshComp->SetWorldRotation(FRotator(0.0f, -180.0f, 0.0f));
 	}
-	AddMovementInput(Direction, Value);
+	AddMovementInput(Direction, Value);*/
+	if (Controller != NULL && Value != 0.0f) {
+		//Verificar o que é considerado como a frente do personagem
+		FRotator Rotation = Controller->GetControlRotation();
+		//Veririca se o personagem está andando sobre alguma superfície
+		//ou cainda para limitar a sua rotação em PITCH
+		if (GetCharacterMovement()->IsMovingOnGround() ||
+			GetCharacterMovement()->IsFalling()) {
+			Rotation.Pitch = 0.0f;
+		}
+		//Adicionar o movimento na direção que é considerada frente
+		const FVector Direction = FRotationMatrix(Rotation).
+			GetScaledAxis(EAxis::X);
+		AddMovementInput(Direction, Value);
+	}
 }
 
 void APersonagem::MoveSides(float Value) {
-	FVector Direction(0.0f, 1.0f, 0.0f);
+	/*FVector Direction(0.0f, 1.0f, 0.0f);
 	if (Value > 0.0f) {
 		MeshComp->SetWorldRotation(FRotator(0.0f, 90.0f, 0.0f));
 	} else if (Value < 0.0f) {
 		MeshComp->SetWorldRotation(FRotator(0.0f, -90.0f, 0.0f));
 	}
-	AddMovementInput(Direction, Value);
+	AddMovementInput(Direction, Value);*/
+	if (Controller != NULL && Value != 0.0f) {
+		FRotator Rotation = Controller->GetControlRotation();
+		const FVector Direction = FRotationMatrix(Rotation).
+			GetScaledAxis(EAxis::Y);
+		AddMovementInput(Direction, Value);
+	}
 }
 
 void APersonagem::StartRun() {
