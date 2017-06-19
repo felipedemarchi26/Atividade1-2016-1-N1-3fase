@@ -57,6 +57,16 @@ APersonagem::APersonagem()
 		UserWidgetPause = LoadWidget.Class;
 	}
 
+	ConstructorHelpers::FObjectFinder<USoundCue> LoadSoundCue
+	(TEXT("SoundCue'/Game/Audio/shoot_Cue.shoot_Cue'"));
+	if (LoadSoundCue.Succeeded()) {
+		ShootSound = LoadSoundCue.Object;
+	}
+
+	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	AudioComp->bAutoActivate = false;
+	AudioComp->SetupAttachment(GetMesh());
+
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 }
@@ -166,6 +176,10 @@ void APersonagem::Shoot() {
 		AProjectileActor* Proj = World->SpawnActor<AProjectileActor>(Location, Rotation,
 			SpawnParameters);
 		if (Proj != nullptr) {
+			if (!AudioComp->IsPlaying()) {
+				AudioComp->SetSound(ShootSound);
+				AudioComp->Play();
+			}
 			Proj->SetIndex(1);
 		}
 	}
@@ -181,6 +195,12 @@ int32 APersonagem::GetCollected() {
 
 void APersonagem::AddCollected() {
 	Collected++;
+	if (Collected == 10) {
+		UWorld* World = GetWorld();
+		if (World) {
+			UGameplayStatics::OpenLevel(World, "LevelTwo");
+		}
+	}
 }
 
 void APersonagem::SetInside(bool NewInside) {

@@ -59,6 +59,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Collision")
 		USphereComponent* CollectSphereComp;
 
+	UPROPERTY(EditAnywhere, Category = "Audio")
+		USoundCue* ShootSound;
+
+	UPROPERTY(EditAnywhere, Category = "Audio")
+		UAudioComponent* AudioComp;
+
+
 	TArray<class AItem*> Items;
 
 	TSubclassOf<class UUserWidget> UserWidgetPause;
